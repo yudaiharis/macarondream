@@ -1,0 +1,5 @@
+retry
+flask
+requests==2.22.0
+ccxt==1.61.11
+tweepy==4.1.0
