@@ -31,7 +31,12 @@ twitter_token = config.get('settings', 'TWITTER_ACCESS_TOKEN')
 twitter_token_secret = config.get('settings', 'TWITTER_ACCESS_TOKEN_SECRET')
 tv_is = config.getboolean('settings', 'SCREENSHOT')
 tv_dir = config.get('settings', 'TRADING_VIEW_DIR')
-tv_url = 'https://jp.tradingview.com/chart/'
+tv_fqdn = 'https://jp.tradingview.com/chart/'
+if tv_is:
+    tv_url = tv_fqdn + tv_dir
+else:
+    tv_url = ''
+
 
 def push_message(push, notify, *lines):
     print('-------------------------------')
@@ -47,7 +52,7 @@ def unknown_error_handling(log):
     line1 = log
     line2 = 'unknown error {0}'.format(ex)
     line3 = '{0}'.format(ms)
-    push_line_message(True, line1, line2, line3)
+    push_message(True, line1, line2, line3)
     sys.exit()
 
 if exchange == 'Bybit':
@@ -117,7 +122,7 @@ def notify(entry):
         line7 = 'stoploss: ${0}'.format(service.entry_sl)
         line8 = 'balance : ${0}'.format(service.balance)
         line9 = 'time : {0}UTC+9'.format(now.strftime("%Y/%m/%d %H:%M:%S"))
-        line10 = tv_url + tv_dir
+        line10 = tv_url
         push_message(line_notify_is, line_notify, line1, line2, line3, line4, line5, line6, line7, line8, line9, line10)
         push_message(twitter_notify_is, twitter_notify, line1, line2, line3, line4, line5, line6, line7, line8, line9, line10)
     else:
@@ -128,7 +133,7 @@ def notify(entry):
         line5 = 'balance : ${0}'.format(service.balance)
         line6 = 'closed PNL : ${0}'.format(service.closed_pnl)
         line7 = 'time : {0}UTC+9'.format(now.strftime("%Y/%m/%d %H:%M:%S"))
-        line8 = tv_url + tv_dir
+        line8 = tv_url
         push_message(line_notify_is, line_notify, line1, line2, line3, line4, line5, line6, line7, line8)
         push_message(twitter_notify_is, twitter_notify, line1, line2, line3, line4, line5, line6, line7, line8)
 
